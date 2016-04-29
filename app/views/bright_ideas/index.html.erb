@@ -1,0 +1,37 @@
+<a href="/sessions">Logout</a>
+
+<h1>Hi <%= @user.alias %>!</h1>
+
+<form action="/bright_ideas" method="post" >
+  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+  <input type="hidden" name="bright_idea[user_id]">
+  <input name="bright_idea[content]" style="width:200px;" id="content" placeholder="Post something witty here...">
+  <input type="submit" value="Idea!">
+</form>
+
+<table>
+  <thead>
+  <tr>
+    <% @bright_ideas.each do |bright_idea| %>
+    <td><a href="/users/<%= bright_idea.user.id %>"><%= bright_idea.user.name%></a> says:</td>
+    <td><%= bright_idea.content %></td>
+    <td><a href="/bright_ideas/<%= bright_idea.id %>"><%= bright_idea.likes.count %> people like this</td>
+      <td>
+        <form action='/likes' method='post'>
+            <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+            <input type='hidden' name='bright_idea_id' value='<%= bright_idea.id %>'>
+            <button type='submit'>Like</button>
+          </form>
+      </td>
+    <td>
+    <% if @current_user == bright_idea.user_id %>
+      <form action="/bright_ideas/<%= bright_idea.id %>" method="post">
+            <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+            <input type='hidden' name="_method" value="delete">
+            <button type="submit">Delete</button></td>
+      </form>
+    <% end %>
+    </td>
+  </tr>
+  <% end %>
+</table>
